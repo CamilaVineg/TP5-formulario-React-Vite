@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>TP5 — Task React · Demostración</title>
+<style>
+  :root {
+    --ink: #14181f;
+    --soft: #5b6472;
+    --line: #d8dde5;
+    --accent: #1d4ed8;
+    --ok: #157347;
+    --err: #b42318;
+    --code-bg: #f4f6f9;
+  }
+
+  @page { size: A4; margin: 18mm 16mm; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 10pt;
+    line-height: 1.5;
+    color: var(--ink);
+    background: #fff;
+  }
+
+  h1 { font-size: 20pt; margin: 0 0 4mm; letter-spacing: -.02em; }
+  h2 { font-size: 13.5pt; margin: 0 0 2.5mm; }
+  h3 { font-size: 11pt; margin: 4.5mm 0 1.8mm; color: var(--accent); }
+  p { margin: 0 0 2.5mm; }
+
+  .pagina { page-break-after: always; }
+  .pagina:last-child { page-break-after: auto; }
+
+  /* ---------- portada ---------- */
+  .portada {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 235mm;
+    text-align: center;
+  }
+  .portada .carrera { color: var(--soft); text-transform: uppercase; letter-spacing: .16em; font-size: 9pt; }
+  .portada .titulo { font-size: 28pt; font-weight: 700; margin: 6mm 0; letter-spacing: -.03em; }
+  .portada .sub { font-size: 13pt; color: var(--soft); }
+  .portada .meta { margin-top: 18mm; font-size: 10pt; color: var(--soft); }
+  .portada .meta strong { color: var(--ink); }
+  .portada .repo {
+    margin-top: 14mm; padding: 4mm 6mm; border: 1px solid var(--line);
+    border-radius: 3mm; display: inline-block; font-size: 9.5pt;
+  }
+  .portada .repo code { font-size: 9pt; }
+
+  /* ---------- tablas ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 2.5mm 0 4mm; font-size: 9pt; }
+  th, td { text-align: left; padding: 1.8mm 2.2mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #eef1f6; font-weight: 600; font-size: 8.5pt; text-transform: uppercase; letter-spacing: .04em; }
+  tbody tr:nth-child(even) { background: #fafbfd; }
+  td.ok { color: var(--ok); font-weight: 700; }
+  td.no { color: var(--err); font-weight: 700; }
+
+  /* ---------- código ---------- */
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 2mm; padding: 2.5mm 3.5mm; overflow-x: auto;
+    font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+    font-size: 8.2pt; line-height: 1.4; margin: 1.8mm 0 3mm;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  code { font-family: "Cascadia Code", Consolas, monospace; font-size: 9pt; }
+
+  /* ---------- capturas ---------- */
+  figure { margin: 4mm 0 6mm; page-break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid var(--line); border-radius: 2mm; display: block; }
+  figure.ancha img { max-height: 195mm; width: auto; max-width: 100%; margin: 0 auto; }
+  figcaption { margin-top: 2mm; font-size: 8.5pt; color: var(--soft); }
+  figcaption b { color: var(--ink); }
+
+  /* ---------- varios ---------- */
+  .recuadro { border: 1px solid var(--line); border-radius: 2mm; padding: 3mm 3.5mm; margin: 2.5mm 0 4mm; background: #fbfcfe; }
+  .recuadro.nota { border-left: 3px solid var(--accent); }
+  .recuadro.exito { border-left: 3px solid var(--ok); }
+  .recuadro.error { border-left: 3px solid var(--err); }
+  .recuadro h4 { margin: 0 0 1.8mm; font-size: 9.5pt; }
+  .recuadro p:last-child, .recuadro ul:last-child { margin-bottom: 0; }
+
+  .captchas { display: flex; flex-wrap: wrap; gap: 2.5mm; margin: 2.5mm 0; }
+  .chip { font-family: Consolas, monospace; font-size: 8.5pt; background: var(--code-bg); border: 1px solid var(--line); border-radius: 1.5mm; padding: 1.2mm 2.5mm; }
+
+  .dos-col { display: flex; gap: 6mm; }
+  .dos-col > div { flex: 1; }
+
+  ul { margin: 1.8mm 0 3mm; padding-left: 5mm; }
+  li { margin-bottom: 1mm; }
+
+  .pie { margin-top: 5mm; padding-top: 2mm; border-top: 1px solid var(--line); font-size: 8pt; color: var(--soft); }
+  .rotulo { font-size: 8.5pt; text-transform: uppercase; letter-spacing: .08em; color: var(--soft); margin-bottom: 1.5mm; }
+</style>
+</head>
+<body>
+
+<!-- ============ 1. PORTADA ============ -->
+<section class="pagina portada">
+  <div class="carrera">Programación Avanzada · 2026</div>
+  <div class="titulo">Trabajo Práctico 5</div>
+  <div class="sub">Task React — Manejador de tareas de proyectos de software</div>
+
+  <div class="meta">
+    <strong>Alumna:</strong> Camila Viñeg<br />
+    <strong>Carrera:</strong> Licenciatura en Sistemas de Información<br />
+    <strong>Fecha:</strong> octubre de 2026
+  </div>
+
+  <div class="repo">
+    <div class="rotulo">Código fuente</div>
+    <code>github.com/CamilaVineg/TP5-formulario-React-Vite</code>
+  </div>
+</section>
+
+<!-- ============ 2. REQUERIMIENTOS ============ -->
+<section class="pagina">
+  <h2>1. Requerimientos y cumplimiento</h2>
+
+  <table>
+    <thead>
+      <tr><th style="width:8%">#</th><th style="width:38%">Requerimiento</th><th style="width:34%">Dónde se implementa</th><th style="width:20%">Estado</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Formulario en React con Vite</td><td><code>frontend/src/components/TareaForm.jsx</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>2</td><td>12 campos requeridos</td><td><code>db/schema.sql</code> · <code>schemas/tarea.schema.js</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>3</td><td>Componente «Listado de Tareas»</td><td><code>frontend/src/components/ListadoTareas.jsx</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>4</td><td>Editar tareas</td><td><code>PUT /api/tareas/:id</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>5</td><td>Eliminar tareas</td><td><code>DELETE /api/tareas/:id</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>6</td><td>Finalizar tareas</td><td><code>PATCH /api/tareas/:id/finalizar</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>7</td><td>Persistencia en SQL / PostgreSQL</td><td><code>db/schema.sql</code> + volumen <code>pgdata</code></td><td class="ok">Cumplido</td></tr>
+      <tr><td>8</td><td>Frontend dentro de Docker</td><td><code>frontend/Dockerfile</code> + nginx</td><td class="ok">Cumplido</td></tr>
+      <tr><td>9</td><td>Backend dentro de Docker</td><td><code>backend/Dockerfile</code> + <code>compose.yaml</code></td><td class="ok">Cumplido</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Stack tecnológico</h3>
+  <div class="captchas">
+    <span class="chip">React 19</span><span class="chip">Vite 8</span><span class="chip">Express 5</span>
+    <span class="chip">PostgreSQL 16</span><span class="chip">Zod 4</span><span class="chip">oxlint 1.86</span>
+    <span class="chip">Docker 29</span><span class="chip">Docker Compose v5</span><span class="chip">nginx</span>
+  </div>
+
+  <h3>Verificaciones ejecutadas</h3>
+  <table>
+    <thead><tr><th>Verificación</th><th style="width:30%">Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>Pruebas de la API (casos correctos e incorrectos)</td><td class="ok">24 pasaron, 0 fallaron</td></tr>
+      <tr><td>Ejecutadas a través de nginx (puerto 8080)</td><td class="ok">24 pasaron, 0 fallaron</td></tr>
+      <tr><td>Colección Postman completa</td><td class="ok">24 peticiones, 37 aserciones, 0 fallos</td></tr>
+      <tr><td>Linter oxlint sobre el frontend</td><td class="ok">0 errores, 0 advertencias</td></tr>
+      <tr><td>Build de producción (<code>npm run build</code>)</td><td class="ok">Correcto</td></tr>
+      <tr><td>Persistencia tras <code>docker compose down</code></td><td class="ok">Datos conservados</td></tr>
+      <tr><td>Errores en consola del navegador</td><td class="ok">Ninguno</td></tr>
+    </tbody>
+  </table>
+
+  <div class="recuadro nota">
+    <h4>Sobre este documento</h4>
+    <p>El detalle de arquitectura, decisiones de diseño y estructura de archivos está en el
+    <code>README.md</code> del repositorio. Este documento se concentra en la
+    <strong>evidencia de funcionamiento</strong>: capturas de la interfaz y respuestas
+    reales de la API obtenidas durante la ejecución.</p>
+  </div>
+</section>
+
+<!-- ============ 3. ARQUITECTURA ============ -->
+<section class="pagina">
+  <h2>2. Arquitectura</h2>
+
+<pre>
+   Navegador
+      │  HTTP  (puerto 8080)
+      ▼
+┌─────────────────────────────────────────┐
+│  frontend  ·  imagen Docker              │
+│  nginx:alpine                            │
+│  ├─ sirve el build de Vite (dist/)       │
+│  └─ proxy inverso:  /api/* ──┐           │
+└───────────────────────────────┼──────────┘
+                                │  red interna de Compose
+                                ▼
+┌─────────────────────────────────────────┐
+│  backend  ·  imagen Docker              │
+│  node:22-alpine + Express 5             │
+│  routes → controllers → services → pg   │
+│                              │          │
+└──────────────────────────────┼──────────┘
+                               │  protocolo PostgreSQL (5432)
+                               ▼
+┌─────────────────────────────────────────┐
+│  db  ·  postgres:16-alpine              │
+│  volumen nombrado: pgdata               │
+│  tabla: tareas (12 campos + auditoría)   │
+└─────────────────────────────────────────┘
+</pre>
+
+  <h3>Por qué un solo origen</h3>
+  <p>El navegador conversa siempre con <code>localhost:8080</code>. Nginx se encarga de
+  reenviar las rutas <code>/api/*</code> al backend. Esto tiene tres consecuencias:</p>
+  <ul>
+    <li><strong>No hay CORS</strong> en producción: la petición nunca es cross-origin porque
+        el servidor que responde es el mismo que sirvió la página.</li>
+    <li><strong>No hay URLs hardcodeadas</strong>: el frontend llama a <code>/api/tareas</code>,
+        una ruta relativa, y funciona igual en desarrollo y en el contenedor.</li>
+    <li><strong>Una sola URL para la entrega</strong>: quien abre <code>localhost:8080</code>
+        obtiene la aplicación completa y funcional.</li>
+  </ul>
+
+  <h3>Orden de arranque</h3>
+  <p>El backend declara <code>depends_on: db: condition: service_healthy</code> y la base tiene
+  un <code>healthcheck</code> con <code>pg_isready</code>. De este modo el backend no intenta
+  conectarse a una base que aún no está escuchando, y evita la clase de errores de
+  «connection refused» en el arranque.</p>
+
+  <div class="recuadro nota">
+    <h4>Endpoint de salud</h4>
+    <p><code>GET /api/health</code> ejecuta <code>SELECT 1</code> contra PostgreSQL. Responde
+    <code>200 {"status":"ok","db":"up"}</code> si la base responde y
+    <code>503 {"status":"error","db":"down"}</code> si no. No es un stub: valida la conexión real.</p>
+  </div>
+</section>
+
+<!-- ============ 4. CAPTURA 1 ============ -->
+<section class="pagina">
+  <h2>3. Interfaz — vista general</h2>
+
+  <figure class="ancha">
+    <img src="capturas/1-listado.png" alt="Vista general de la aplicación" />
+    <figcaption><b>Figura 1.</b> Vista general. Arriba el formulario de alta; abajo el
+    «Listado de Tareas» con las columnas del modelo de datos y las acciones por fila.</figcaption>
+  </figure>
+
+  <p>El listado es un componente propio, <code>ListadoTareas</code>. Muestra los campos del modelo
+  y las tres acciones <strong>Editar</strong>, <strong>Finalizar</strong> y
+  <strong>Eliminar</strong>. Cada fila indica su estado mediante un badge de color: azul para
+  <em>En Progreso</em>, naranja para <em>Pendiente</em> y verde para <em>Finalizada</em>.</p>
+</section>
+
+<!-- ============ 5. CAPTURA 2 ============ -->
+<section class="pagina">
+  <h2>4. Interfaz — formulario con los 12 campos</h2>
+
+  <figure class="ancha">
+    <img src="capturas/2-formulario.png" alt="Formulario de tarea" />
+    <figcaption><b>Figura 2.</b> Formulario de alta. Los cinco campos de texto corto, los tres
+    selectores de catálogo, las dos fechas y los dos campos de texto largo.</figcaption>
+  </figure>
+
+  <table>
+    <thead><tr><th style="width:34%">Campo</th><th style="width:20%">Control</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td>Nombre del Proyecto</td><td>texto</td><td>máx. 120 caracteres</td></tr>
+      <tr><td>Tipo de Actividad</td><td>select</td><td>Desarrollo · Testing · Diseño · Deploy · Soporte</td></tr>
+      <tr><td>Estado</td><td>select</td><td>Pendiente · En Progreso · Finalizada</td></tr>
+      <tr><td>Resumen</td><td>texto</td><td>máx. 200 caracteres</td></tr>
+      <tr><td>Descripción</td><td>área de texto</td><td>campo largo</td></tr>
+      <tr><td>Prioridad</td><td>select</td><td>Baja · Media · Alta · Crítica</td></tr>
+      <tr><td>Informador</td><td>texto</td><td>máx. 120 caracteres</td></tr>
+      <tr><td>Persona asignada</td><td>texto</td><td>máx. 120 caracteres</td></tr>
+      <tr><td>Precondición</td><td>área de texto</td><td>campo largo</td></tr>
+      <tr><td>Fecha de Creación</td><td>date</td><td>obligatoria, formato ISO</td></tr>
+      <tr><td>Fecha de Cierre</td><td>date</td><td>se habilita solo si el estado es <em>Finalizada</em></td></tr>
+      <tr><td>Sprint</td><td>texto</td><td>máx. 40 caracteres</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 6. CAPTURAS 3 y 4 ============ -->
+<section class="pagina">
+  <h2>5. Interfaz — validación y acciones</h2>
+
+  <figure class="ancha">
+    <img src="capturas/3-validacion.png" alt="Validación del formulario" />
+    <figcaption><b>Figura 3.</b> Validación en el cliente. Al enviar con «Resumen» y «Sprint»
+    vacíos, los campos se marcan en rojo con el mensaje de error y no se dispara ninguna
+    petición HTTP.</figcaption>
+  </figure>
+
+  <figure class="ancha">
+    <img src="capturas/4-acciones.png" alt="Listado con tarea finalizada" />
+    <figcaption><b>Figura 4.</b> La tarea «Suite de tests» en estado <em>Finalizada</em>: badge
+    verde y el botón <strong>Finalizar</strong> deshabilitado. Las otras cuatro filas mantienen
+    las tres acciones disponibles.</figcaption>
+  </figure>
+
+  <div class="recuadro nota">
+    <h4>Detalle de la Figura 4</h4>
+    <p>La fila finalizada muestra el botón <em>Finalizar</em> deshabilitado. Es la misma regla de
+    negocio del backend reflejada en la interfaz: una tarea cerrada no se puede volver a cerrar,
+    porque eso pisaría su fecha de cierre original.</p>
+  </div>
+</section>
+
+<!-- ============ 7. CAPTURAS 5-8 ============ -->
+<section class="pagina">
+  <h2>6. Interfaz — confirmación, edición y filtros</h2>
+
+  <figure class="ancha">
+    <img src="capturas/5-aviso.png" alt="Aviso de tarea creada" />
+    <figcaption><b>Figura 5.</b> Confirmación visual tras crear la tarea: aviso verde con el
+    identificador asignado por la base de datos.</figcaption>
+  </figure>
+
+  <figure class="ancha">
+    <img src="capturas/6-editar.png" alt="Formulario en modo edición" />
+    <figcaption><b>Figura 6.</b> Modo edición. El mismo formulario se reutiliza precargado con
+    los datos de la tarea elegida; el título indica <code>Editar tarea #1</code> y aparece el
+    botón <em>Cancelar</em>.</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 8. FILTROS ============ -->
+<section class="pagina">
+  <h2>7. Interfaz — filtros y búsqueda</h2>
+
+  <figure class="ancha">
+    <img src="capturas/7-filtro.png" alt="Filtro por estado" />
+    <figcaption><b>Figura 7.</b> Filtro por estado aplicado. El listado se reduce en el servidor,
+    no en el navegador: se vuelve a pedir al backend con <code>?estado=Finalizada</code>.</figcaption>
+  </figure>
+
+  <figure class="ancha">
+    <img src="capturas/8-vacio.png" alt="Estado sin resultados" />
+    <figcaption><b>Figura 8.</b> Búsqueda sin coincidencias. La interfaz informa el estado vacío
+    en lugar de mostrar una tabla en blanco.</figcaption>
+  </figure>
+
+  <div class="recuadro nota">
+    <h4>Confirmación antes de eliminar</h4>
+    <p>La eliminación pide confirmación con el nombre de la tarea y la advertencia de que no se
+    puede deshacer. Al cancelar, la tarea permanece en la base de datos.</p>
+  </div>
+</section>
+
+<!-- ============ 9. CASOS CORRECTOS ============ -->
+<section class="pagina">
+  <h2>8. Casos correctos</h2>
+  <p class="rotulo">Ejecutados con Postman contra http://localhost:8080/api</p>
+
+  <table>
+    <thead><tr><th style="width:6%">#</th><th style="width:30%">Operación</th><th style="width:34%">Endpoint</th><th style="width:12%">Código</th><th>Resultado</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>Healthcheck</td><td><code>GET /health</code></td><td class="ok">200</td><td>API y base de datos operativas</td></tr>
+      <tr><td>2</td><td>Listar tareas</td><td><code>GET /tareas</code></td><td class="ok">200</td><td>Arreglo de tareas, ordenadas por creación descendente</td></tr>
+      <tr><td>3</td><td>Crear tarea</td><td><code>POST /tareas</code></td><td class="ok">201</td><td><code>fecha_cierre: null</code>, <code>created_at</code> generado</td></tr>
+      <tr><td>4</td><td>Crear ya finalizada</td><td><code>POST /tareas</code></td><td class="ok">201</td><td>Se respeta la <code>fecha_cierre</code> informada</td></tr>
+      <tr><td>5</td><td>Obtener por id</td><td><code>GET /tareas/:id</code></td><td class="ok">200</td><td>Objeto con los 12 campos</td></tr>
+      <tr><td>6</td><td>Editar</td><td><code>PUT /tareas/:id</code></td><td class="ok">200</td><td>Campos reemplazados, <code>updated_at</code> cambia</td></tr>
+      <tr><td>7</td><td><strong>Finalizar</strong></td><td><code>PATCH /tareas/:id/finalizar</code></td><td class="ok">200</td><td>Marca estado y fecha de cierre juntos</td></tr>
+      <tr><td>8</td><td>Resumen</td><td><code>GET /tareas/resumen</code></td><td class="ok">200</td><td>Totales y cantidad finalizadas</td></tr>
+      <tr><td>9</td><td>Filtrar por estado</td><td><code>GET /tareas?estado=…</code></td><td class="ok">200</td><td>Solo tareas de ese estado</td></tr>
+      <tr><td>10</td><td>Buscar proyecto</td><td><code>GET /tareas?proyecto=…</code></td><td class="ok">200</td><td>Coincidencia parcial, sin distinguir mayúsculas</td></tr>
+      <tr><td>11</td><td><strong>Eliminar</strong></td><td><code>DELETE /tareas/:id</code></td><td class="ok">204</td><td>Sin contenido; la fila deja de existir</td></tr>
+    </tbody>
+  </table>
+
+  <div class="pie">TP5 — Task React · github.com/CamilaVineg/TP5-formulario-React-Vite</div>
+</section>
+
+<!-- ============ 9b. RESPUESTA CREACION ============ -->
+<section class="pagina">
+  <h2>8. Casos correctos — creación de una tarea</h2>
+
+  <p>El caso 3 es el que exercise la validación completa del servidor: los doce campos llegan,
+  se validan contra el esquema y se devuelven con los campos de auditoría ya completos.</p>
+
+  <div class="recuadro exito">
+    <h4>Encadenamiento de las pruebas</h4>
+    <p>Los casos no son independientes: el <strong>03</strong> crea una tarea y guarda su
+    <code>id</code> en la variable <code>{{tareaId}}</code>, y los casos siguientes la consultan,
+    editan y finalizan sobre ese mismo registro. El <strong>11</strong> la elimina al final para no
+    dejar filas de prueba en la base.</p>
+  </div>
+
+  <h3>Respuesta completa — creación (caso 3)</h3>
+<pre>POST /api/tareas
+{
+  "nombre_proyecto": "Refactor login",
+  "tipo_actividad": "Desarrollo",
+  "estado": "Pendiente",
+  "resumen": "Reescribir el formulario de acceso",
+  "descripcion": "Separar la validacion de UI de la de negocio en el login.",
+  "prioridad": "Alta",
+  "informador": "Carla Mendez",
+  "persona_asignada": "Vine",
+  "precondicion": "Acceso al repositorio frontend",
+  "fecha_creacion": "2026-10-05",
+  "sprint": "Sprint 9"
+}
+
+<strong>201 Created</strong>
+{
+  "id": 7,
+  "nombre_proyecto": "Refactor login",
+  ...
+  "fecha_cierre": null,
+  "created_at": "2026-10-05T05:41:44.166Z",
+  "updated_at": "2026-10-05T05:41:44.166Z"
+}</pre>
+
+  <div class="pie">TP5 — Task React · github.com/CamilaVineg/TP5-formulario-React-Vite</div>
+</section>
+
+<!-- ============ 10. FINALIZAR ============ -->
+<section class="pagina">
+  <h2>9. Caso clave — finalizar</h2>
+
+  <p>La consigna pide poder «finalizar» una tarea. El endpoint correspondiente no recibe cuerpo:</p>
+
+<pre>PATCH /api/tareas/8/finalizar
+
+<strong>200 OK</strong>
+{
+  "id": 8,
+  "nombre_proyecto": "Refactor login",
+  "estado": "Finalizada",
+  "fecha_cierre": "2026-10-05",
+  "created_at": "2026-10-05T05:41:44.182Z",
+  "updated_at": "2026-10-05T05:41:44.234Z"
+}</pre>
+
+  <div class="recuadro exito">
+    <h4>Por qué el endpoint no recibe datos</h4>
+    <p>El servidor escribe <code>estado</code> y <code>fecha_cierre</code> en la misma operación
+    SQL. Si el cliente pudiera enviarlos por separado, quedaría la posibilidad de una tarea
+    marcada como finalizada sin fecha de cierre, o al revés. Concentrar la decisión en el
+    servidor hace que ese estado inconsistente sea <strong>imposible de representar</strong>.</p>
+  </div>
+
+  <div class="recuadro nota">
+    <h4>Protección contra la re-finalización</h4>
+    <p>La consulta filtra por <code>estado &lt;&gt; 'Finalizada'</code>. Si se llama sobre una tarea
+    ya cerrada, no hay fila que actualizar y la API responde
+    <code>404</code> con el mensaje «Tarea no encontrada o ya finalizada». Así la fecha de cierre
+    original nunca se pisa por una repetición accidental.</p>
+  </div>
+
+  <h3>Restricciones en la base de datos</h3>
+  <p>Los tres catálogos están garantizados en dos niveles independientes:</p>
+<pre>-- backend/src/schemas/tarea.schema.js
+tipo_actividad: z.enum(['Desarrollo', 'Testing', 'Diseño', 'Deploy', 'Soporte'])
+estado:         z.enum(['Pendiente', 'En Progreso', 'Finalizada'])
+prioridad:      z.enum(['Baja', 'Media', 'Alta', 'Crítica'])
+
+-- db/schema.sql
+CONSTRAINT tareas_tipo_actividad_chk CHECK (tipo_actividad IN (...))
+CONSTRAINT tareas_estado_chk         CHECK (estado IN (...))
+CONSTRAINT tareas_prioridad_chk      CHECK (prioridad IN (...))</pre>
+
+  <div class="recuadro exito">
+    <h4>Validación en tres capas</h4>
+    <ul>
+      <li><strong>Cliente</strong> —Validation.jsx, para dar retroalimentación inmediata.</li>
+      <li><strong>Servidor</strong> — Zod, que es la barrera real porque el cliente no es confiable.</li>
+      <li><strong>Base de datos</strong> — restricciones <code>CHECK</code>, último recurso
+          frente a escrituras directas o bugs en la capa superior.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 11. CASOS INCORRECTOS ============ -->
+<section class="pagina">
+  <h2>10. Casos incorrectos</h2>
+  <p class="rotulo">Ejecutados con Postman contra http://localhost:8080/api</p>
+
+  <table>
+    <thead><tr><th style="width:6%">#</th><th style="width:36%">Datos enviados</th><th style="width:12%">Código</th><th>Causa y respuesta</th></tr></thead>
+    <tbody>
+      <tr><td>E1</td><td><code>tipo_actividad: "Hacha"</code></td><td class="no">400</td><td>Fuera del enum de Zod</td></tr>
+      <tr><td>E2</td><td><code>estado: "A medio hacer"</code></td><td class="no">400</td><td>Fuera del enum de Zod</td></tr>
+      <tr><td>E3</td><td><code>fecha_creacion: "05/10/2026"</code></td><td class="no">400</td><td>Debe ser ISO <code>YYYY-MM-DD</code></td></tr>
+      <tr><td>E4</td><td><code>nombre_proyecto: ""</code></td><td class="no">400</td><td>Cadena vacía tras <code>trim</code></td></tr>
+      <tr><td>E5</td><td>Propiedad <code>sprint</code> ausente</td><td class="no">400</td><td>Campo obligatorio faltante</td></tr>
+      <tr><td>E6</td><td><code>resumen</code> de 300 caracteres</td><td class="no">400</td><td>Supera el máximo de 200</td></tr>
+      <tr><td>E7</td><td>Cuerpo que no es JSON</td><td class="no">400</td><td>JSON sintácticamente inválido</td></tr>
+      <tr><td>E8</td><td><code>PUT /tareas/999999</code></td><td class="no">404</td><td>El registro no existe</td></tr>
+      <tr><td>E9</td><td><code>GET /tareas/999999</code></td><td class="no">404</td><td>El registro no existe</td></tr>
+      <tr><td>E10</td><td><code>DELETE /tareas/999999</code></td><td class="no">404</td><td>El registro no existe</td></tr>
+      <tr><td>E11</td><td><code>PATCH /tareas/1/finalizar</code> sobre tarea ya finalizada</td><td class="no">404</td><td>Re-finalización bloqueada</td></tr>
+      <tr><td>E12</td><td><code>GET /tareas/abc</code></td><td class="no">400</td><td>Identificador no numérico</td></tr>
+      <tr><td>E13</td><td><code>GET /no-existe</code></td><td class="no">404</td><td>Ruta no registrada</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Respuestas completas</h3>
+  <p>Las cuatro primeras, para mostrar la estructura del mensaje de error.</p>
+</section>
+
+<!-- ============ 11b. RESPUESTAS INCORRECTAS ============ -->
+<section class="pagina">
+  <h2>10. Casos incorrectos — respuestas</h2>
+
+  <div class="recuadro error">
+    <h4>E1 — valor fuera del catálogo</h4>
+<pre>POST /api/tareas
+  "tipo_actividad": "Hacha"
+
+<strong>400 Bad Request</strong>
+{
+  "error": "Datos invalidos",
+  "detalles": [
+    {
+      "campo": "tipo_actividad",
+      "mensaje": "debe ser uno de: Desarrollo, Testing, Diseño, Deploy, Soporte"
+    }
+  ]
+}</pre>
+  </div>
+
+  <div class="recuadro error">
+    <h4>E3 — formato de fecha incorrecto</h4>
+<pre>POST /api/tareas
+  "fecha_creacion": "05/10/2026"
+
+<strong>400 Bad Request</strong>
+{
+  "error": "Datos invalidos",
+  "detalles": [
+    {
+      "campo": "fecha_creacion",
+      "mensaje": "debe tener formato YYYY-MM-DD"
+    }
+  ]
+}</pre>
+  </div>
+
+  <div class="recuadro error">
+    <h4>E7 — cuerpo malformado</h4>
+<pre>POST /api/tareas
+  Content-Type: application/json
+
+  esto no es un objeto
+
+<strong>400 Bad Request</strong>
+{ "error": "JSON invalido en el body" }</pre>
+    <p>Es un caso distinto al de un body vacío: el servidor detecta que el texto recibido no es
+    JSON antes de intentar validarlo, y responde con su propio mensaje en lugar de una lista de
+    campos.</p>
+  </div>
+
+  <div class="pie">TP5 — Task React · github.com/CamilaVineg/TP5-formulario-React-Vite</div>
+</section>
+
+<!-- ============ 12. ERRORES Y SEGURIDAD ============ -->
+<section class="pagina">
+  <h2>11. Tratamiento de errores</h2>
+
+  <h3>Manejador central</h3>
+  <p>Un único middleware traduce las fallas internas a respuestas útiles. Se apoya en que
+  Express 5 envía automáticamente los rechazos de los handlers <code>async</code> al
+  error handler, lo que evita repetir <code>try/catch</code> en cada endpoint.</p>
+
+  <table>
+    <thead><tr><th style="width:26%">Origen</th><th style="width:14%">Código</th><th>Respuesta</th></tr></thead>
+    <tbody>
+      <tr><td>Error de validación de Zod</td><td class="no">400</td><td>Lista de campos con el mensaje de cada uno</td></tr>
+      <tr><td>Body JSON inválido</td><td class="no">400</td><td><code>JSON invalido en el body</code></td></tr>
+      <tr><td>Id no numérico <small>(Postgres 22P02)</small></td><td class="no">400</td><td><code>Identificador con formato invalido</code></td></tr>
+      <tr><td>Restricción <code>CHECK</code> violada <small>(23514)</small></td><td class="no">400</td><td>Indica el nombre de la restricción</td></tr>
+      <tr><td>Violación de unicidad <small>(23505)</small></td><td class="no">409</td><td><code>Registro duplicado</code></td></tr>
+      <tr><td>Referencia inexistente <small>(23503)</small></td><td class="no">409</td><td><code>Referencia a un registro inexistente</code></td></tr>
+      <tr><td>Registro inexistente</td><td class="no">404</td><td><code>Tarea no encontrada</code></td></tr>
+      <tr><td>Ruta no registrada</td><td class="no">404</td><td><code>Ruta no encontrada</code></td></tr>
+      <tr><td>Fallo inesperado</td><td class="no">500</td><td>Detalle en el log del servidor, respuesta genérica al cliente</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Consultas parametrizadas</h3>
+  <p>Ninguna consulta concatena valores. Todas usan marcadores posicionales, que PostgreSQL
+  envía fuera de la línea de comandos:</p>
+<pre>-- Correcto: el valor viaja como parámetro, nunca se interpreta como SQL
+const { rows } = await pool.query('SELECT * FROM tareas WHERE id = $1', [id])
+
+-- Incorrecto: concatenar habilitaría inyección SQL
+await pool.query(`SELECT * FROM tareas WHERE id = ${id}`)   <strong>no se usa</strong></pre>
+
+  <p>El filtrado por estado y proyecto también se parametrizan, incluso en la condición
+  <code>ILIKE</code>, porque el valor del comodín se arma en JavaScript y se pasa como
+  parámetro <code>$1</code>.</p>
+
+  <div class="recuadro nota">
+    <h4>Gestión del pool de conexiones</h4>
+    <p><code>src/db/pool.js</code> se limita a crear el <code>Pool</code>; no abre conexiones al
+    importarse. Cada <code>pool.query()</code> toma una conexión del grupo y la devuelve
+    automáticamente. Conectarse al importar y olvidar cerrar agota el grupo de conexiones
+    en pocos minutos. Al apagar el servidor, <code>pool.end()</code> libera todo de forma limpia.</p>
+  </div>
+</section>
+
+<!-- ============ 13. PERSISTENCIA Y DOCKER ============ -->
+<section class="pagina">
+  <h2>12. Persistencia y contenedores</h2>
+
+  <h3>Modelo de datos</h3>
+<pre>CREATE TABLE tareas (
+  id               SERIAL PRIMARY KEY,
+  nombre_proyecto  VARCHAR(120) NOT NULL,
+  tipo_actividad   VARCHAR(40)  NOT NULL,
+  estado           VARCHAR(20)  NOT NULL DEFAULT 'Pendiente',
+  resumen          VARCHAR(200) NOT NULL,
+  descripcion      TEXT         NOT NULL,
+  prioridad        VARCHAR(20)  NOT NULL,
+  informador       VARCHAR(120) NOT NULL,
+  persona_asignada VARCHAR(120) NOT NULL,
+  precondicion     TEXT         NOT NULL,
+  fecha_creacion   DATE         NOT NULL,
+  fecha_cierre     DATE,                 <em>-- nullable: la tarea puede no estar cerrada</em>
+  sprint           VARCHAR(40)  NOT NULL,
+  created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  CONSTRAINT tareas_tipo_actividad_chk CHECK (...),
+  CONSTRAINT tareas_estado_chk         CHECK (...),
+  CONSTRAINT tareas_prioridad_chk      CHECK (...)
+);
+
+CREATE INDEX idx_tareas_estado  ON tareas (estado);
+CREATE INDEX idx_tareas_proyecto ON tareas (nombre_proyecto);</pre>
+
+  <p><code>fecha_cierre</code> admite nulos porque una tarea abierta todavía no tiene fecha de
+  cierre. <code>created_at</code> y <code>updated_at</code> se registran en la base y no desde la
+  aplicación, de modo que no dependen del reloj del cliente.</p>
+
+  <div class="recuadro nota">
+    <h4>Por qué las fechas se serializan como texto</h4>
+    <p>El controlador <code>pg</code> convierte por defecto una columna <code>DATE</code> en un
+    objeto <code>Date</code> de JavaScript, y al aplicar <code>JSON.stringify</code> se obtiene
+    algo como <code>"2026-10-05T00:00:00.000Z"</code>. Eso mezcla una fecha sin hora con una zona
+    horaria que no le corresponde: un cliente que la interprete como fecha local puede ver el día
+    anterior en ubicaciones con UTC negativo.</p>
+    <p>La solución es configurar el type parser del propio <code>pg</code> en
+    <code>src/db/pool.js</code>, de modo que la columna llegue al cliente como el texto que
+    PostgreSQL ya tenía:</p>
+<pre>import { Pool, types } from 'pg'
+
+types.setTypeParser(1082, (valor) =&gt; valor)   <em>// OID de DATE</em></pre>
+    <p>El <code>typeof valor === 'string'</code> interno de PostgreSQL se entrega tal cual, así que
+    la API responde <code>"2026-10-05"</code> y el contrato con el frontend es simétrico: lo que se
+    envía es lo que se recibe.</p>
+  </div>
+</section>
+
+<!-- ============ 13b. CONTENEDORES ============ -->
+<section class="pagina">
+  <h2>13. Persistencia y contenedores</h2>
+
+  <h3>Evidencia de persistencia</h3>
+<pre>$ docker compose exec db psql -U admin -d tareas -c "SELECT COUNT(*) FROM tareas;"
+ <strong>7</strong>
+
+$ docker compose down
+ <em># se destruyen los contenedores, el volumen permanece</em>
+
+$ docker compose up -d
+$ docker compose exec db psql -U admin -d tareas -c "SELECT COUNT(*) FROM tareas;"
+ <strong>7</strong>   <em>← los datos sobreviven</em>
+
+$ docker compose down -v      <em># borra también el volumen</em></pre>
+
+  <div class="recuadro exito">
+    <h4>Volumen nombrado</h4>
+    <p>El volumen <code>pgdata</code> almacena los archivos de la base fuera del ciclo de vida del
+    contenedor. Eso cumple el requisito de que la información persista: los datos sobreviven a la
+    reconstrucción completa de la imagen.</p>
+  </div>
+
+  <h3>Construcción de las imágenes</h3>
+<pre># backend/Dockerfile
+FROM node:22-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY src ./src
+EXPOSE 3000
+CMD ["node", "src/server.js"]
+
+# frontend/Dockerfile — construcción en dos etapas
+FROM node:22-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80</pre>
+
+  <div class="recuadro nota">
+    <h4>Construcción en dos etapas</h4>
+    <p>La imagen final del frontend no contiene Node ni el código fuente: solo los archivos
+    estáticos ya compilados y nginx. La primera etapa compila, la segunda copia únicamente el
+    resultado. La imagen resultante es más pequeña y tiene menos superficie de ataque.</p>
+  </div>
+</section>
+
+<!-- ============ 14. CÓMO PROBARLO ============ -->
+<section class="pagina">
+  <h2>14. Cómo reproducir la demostración</h2>
+
+  <h3>Levantar la aplicación</h3>
+<pre>git clone https://github.com/CamilaVineg/TP5-formulario-React-Vite.git
+cd TP5-formulario-React-Vite
+cp .env.example .env
+
+docker compose up -d --build</pre>
+
+  <table>
+    <thead><tr><th style="width:30%">Servicio</th><th style="width:34%">Dirección</th><th>Notas</th></tr></thead>
+    <tbody>
+      <tr><td>Aplicación web</td><td><code>http://localhost:8080</code></td><td>Punto de entrada. Funciona completa.</td></tr>
+      <tr><td>API</td><td><code>http://localhost:3000/api</code></td><td>Acceso directo, sin proxy</td></tr>
+      <tr><td>PostgreSQL</td><td><code>localhost:5433</code></td><td>Puerto 5433: el 5432 está ocupado por un PostgreSQL local</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Cargar datos de ejemplo</h3>
+<pre>docker cp db/seed.sql &lt;contenedor-db&gt;:/tmp/seed.sql
+docker compose exec -T db psql -U admin -d tareas -f /tmp/seed.sql</pre>
+
+  <h3>Pruebas automatizadas</h3>
+<pre>cd backend
+npm test                                       <em># contra :3000</em>
+BASE_URL=http://localhost:8080/api npm test    <em># a través de nginx</em></pre>
+
+  <p>Salida esperada del segundo caso:</p>
+<pre><strong>RESULTADO: 24 pasaron, 0 fallaron</strong></pre>
+
+  <h3>Linter y build</h3>
+<pre>cd frontend
+npm run lint      <em># oxlint → 0 errores, 0 advertencias</em>
+npm run build     <em># Vite → compila a dist/</em></pre>
+
+  <div class="pie">TP5 — Task React · github.com/CamilaVineg/TP5-formulario-React-Vite</div>
+</section>
+
+<!-- ============ 15. POSTMAN Y MANTENIMIENTO ============ -->
+<section class="pagina">
+  <h2>15. Pruebas con Postman y mantenimiento</h2>
+
+  <h3>Pruebas manuales con Postman</h3>
+  <p>En el repositorio, <code>backend/postman_collection.json</code>. Se importa con
+  <em>File → Import</em> y trae dos carpetas con 11 casos correctos y 13 incorrectos, ya
+  configurados contra el puerto 8080. Cada petición incluye un script de aserciones, así que
+  el resultado se lee sin interpretarlo a mano.</p>
+
+  <div class="recuadro nota">
+    <h4>Orden de ejecución</h4>
+    <p>Hay que ejecutar la carpeta <strong>CASOS CORRECTOS</strong> completa y en orden, porque
+    las peticiones se encadenan mediante la variable <code>{{tareaId}}</code>:</p>
+    <ul>
+      <li>El caso <strong>03</strong> crea una tarea y guarda su <code>id</code>.</li>
+      <li>Los casos <strong>05</strong> a <strong>07</strong> la consultan, editan y finalizan.</li>
+      <li>El <strong>11</strong> la elimina, para no dejar basura en la base.</li>
+      <li>El caso incorrecto <strong>E11</strong> necesita esa tarea ya finalizada por el 07:
+          por eso usa <code>{{tareaId}}</code> y no un id fijo.</li>
+    </ul>
+    <p>Si se ejecuta <strong>E11</strong> sin haber corrido antes el 03 y el 07, la tarea
+    todavía estará abierta y la API responderá <code>200</code> en lugar del
+    <code>404</code> esperado.</p>
+  </div>
+
+  <p>Resultado obtenido al ejecutar la colección completa:</p>
+<pre>requests .............. <strong>24</strong>  <em>executed / 0 failed</em>
+test-scripts .......... <strong>24</strong>  <em>executed / 0 failed</em>
+assertions ............ <strong>37</strong>  <em>executed / 0 failed</em></pre>
+
+  <h3>Comandos de mantenimiento</h3>
+<pre>docker compose ps                 <em># estado de los servicios</em>
+docker compose logs -f backend    <em># log del backend</em>
+docker compose exec db psql -U admin -d tareas   <em># consola SQL</em>
+docker compose down               <em># detener, conserva los datos</em>
+docker compose down -v            <em># detener y borrar los datos</em></pre>
+
+  <div class="recuadro nota">
+    <h4>Problemas frecuentes al ejecutarlo</h4>
+    <ul>
+      <li><strong>Puerto 5432 ocupado</strong> — el compose publica la base en el 5433 porque en
+          esta máquina ya hay un PostgreSQL local. Hay que usar <code>5433</code>.</li>
+      <li><strong>Conexión rechazada en el backend</strong — el backend espera a que la base
+          pase su <code>healthcheck</code>; si se fuerza con <code>--build</code> hay que
+          esperar el arranque o revisar <code>docker compose logs backend</code>.</li>
+      <li><strong>La interfaz no encuentra la API</strong — hay que acceder por el puerto
+          <code>8080</code>, que es el que publica el proxy de nginx.</li>
+    </ul>
+  </div>
+
+  <div class="pie">TP5 — Task React · github.com/CamilaVineg/TP5-formulario-React-Vite</div>
+</section>
+
+</body>
+</html>

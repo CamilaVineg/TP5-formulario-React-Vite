@@ -100,6 +100,23 @@ BASE_URL=http://localhost:8080/api npm test   # a través de nginx
 `test/api.test.js` cubre 24 casos: 11 correctos y 13 de error. No requiere
 librerías externas, usa el `fetch` nativo de Node.
 
+La colección `backend/postman_collection.json` cubre los mismos 24 casos y
+trae aserciones en cada petición (37 en total), de modo que se puede correr
+con el Collection Runner de Postman o con `newman run` y obtener el mismo
+resultado sin revisar las respuestas a mano.
+
+```bash
+npx newman run backend/postman_collection.json
+```
+
+### Documento de demostración
+
+`docs/demo.html` es la entrega imprimible del trabajo: requerimientos,
+arquitectura, capturas de la interfaz, casos correctos e incorrectos con las
+respuestas reales de la API y los comandos para reproducirlo todo. Se abre
+directamente en el navegador y se exporta a PDF con <kbd>Ctrl</kbd>+<kbd>P</kbd>
+eligiendo «Guardar como PDF» y los márgenes «Predeterminados».
+
 ## Decisiones de diseño
 
 **Validación en dos capas.** Zod valida en el servidor y las restricciones
@@ -129,6 +146,13 @@ sincronizar estado con un efecto.
 **Reinicio idempotente del esquema.** `schema.sql` usa `IF NOT EXISTS`, así que
 aplicarlo sobre una base existente no rompe nada.
 
+**Las fechas viajan como texto.** `pg` convierte por defecto una columna `DATE`
+en un objeto `Date`, que al serializarse produce `"2026-10-05T00:00:00.000Z"`:
+mezcla una fecha sin hora con una zona horaria ajena y un cliente en UTC
+negativo puede leer el día anterior. `src/db/pool.js` registra un type parser
+para el OID 1082, así que la API responde `"2026-10-05"` y el contrato con el
+frontend queda simétrico.
+
 ## Estructura
 
 ```
@@ -138,8 +162,12 @@ aplicarlo sobre una base existente no rompe nada.
 ├── db/
 │   ├── schema.sql            # tabla, CHECK constraints, índices
 │   └── seed.sql              # datos de ejemplo
+├── docs/
+│   ├── demo.html             # documento imprimible de la entrega
+│   └── capturas/             # capturas de la interfaz
 ├── backend/
 │   ├── Dockerfile
+│   ├── postman_collection.json
 │   ├── test/api.test.js
 │   └── src/
 │       ├── server.js         # arranque y apagado limpio

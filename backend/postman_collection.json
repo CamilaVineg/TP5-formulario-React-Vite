@@ -27,7 +27,18 @@
             "header": [],
             "url": "{{baseUrl}}/health",
             "description": "Verifica que la API responde y que la base de datos esta accesible."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "02 - Listar tareas",
@@ -36,7 +47,18 @@
             "header": [],
             "url": "{{baseUrl}}/tareas",
             "description": "Devuelve todas las tareas ordenadas por fecha de creacion descendente."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "03 - Crear tarea",
@@ -56,7 +78,12 @@
           ],
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Refactor login\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Reescribir el formulario de acceso\",\n  \"descripcion\": \"Separar la validacion de UI de la de negocio en el login.\",\n  \"prioridad\": \"Alta\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Acceso al repositorio frontend\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
@@ -69,14 +96,30 @@
           "name": "04 - Crear tarea ya finalizada",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Suite de tests\",\n  \"tipo_actividad\": \"Testing\",\n  \"estado\": \"Finalizada\",\n  \"resumen\": \"Cubrir endpoints de tareas\",\n  \"descripcion\": \"Casos de prueba CRUD sobre la API, incluyendo validaciones.\",\n  \"prioridad\": \"Baja\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Bruno Diaz\",\n  \"precondicion\": \"API desplegada en staging\",\n  \"fecha_creacion\": \"2026-09-15\",\n  \"fecha_cierre\": \"2026-09-30\",\n  \"sprint\": \"Sprint 6\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "El cliente puede informar fecha_cierre si ya conoce el cierre."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "05 - Obtener una tarea por id",
@@ -84,20 +127,47 @@
             "method": "GET",
             "header": [],
             "url": "{{baseUrl}}/tareas/{{tareaId}}"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "06 - Editar tarea",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Migracion ERP v2\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"En Progreso\",\n  \"resumen\": \"Migrar facturacion a PostgreSQL\",\n  \"descripcion\": \"Reescribir las consultas sobre el esquema nuevo.\",\n  \"prioridad\": \"Crítica\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Backup verificado\",\n  \"fecha_creacion\": \"2026-10-01\",\n  \"sprint\": \"Sprint 7\"\n}"
             },
             "url": "{{baseUrl}}/tareas/{{tareaId}}",
             "description": "Reemplaza todos los campos de la tarea."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "07 - Finalizar tarea",
@@ -106,7 +176,18 @@
             "header": [],
             "url": "{{baseUrl}}/tareas/{{tareaId}}/finalizar",
             "description": "No recibe body. El servidor pone estado=Finalizada y fecha_cierre=CURRENT_DATE juntos, de modo que el cliente no puede desincronizar ambos valores. Si la tarea ya estaba finalizada devuelve 404 y no pisa la fecha de cierre original."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "08 - Resumen con estadisticas",
@@ -114,7 +195,18 @@
             "method": "GET",
             "header": [],
             "url": "{{baseUrl}}/tareas/resumen"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "09 - Filtrar por estado",
@@ -122,7 +214,18 @@
             "method": "GET",
             "header": [],
             "url": "{{baseUrl}}/tareas?estado=Finalizada"
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "10 - Buscar por proyecto",
@@ -131,7 +234,18 @@
             "header": [],
             "url": "{{baseUrl}}/tareas?proyecto=Migr",
             "description": "Busqueda parcial, case-insensitive (ILIKE)."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "11 - Eliminar tarea",
@@ -140,7 +254,18 @@
             "header": [],
             "url": "{{baseUrl}}/tareas/{{tareaId}}",
             "description": "Devuelve 204 sin contenido. Ejecutar al final para no romper los casos que dependen de la variable tareaId."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -151,105 +276,269 @@
           "name": "E1 - tipo_actividad fuera del catalogo",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Prueba error\",\n  \"tipo_actividad\": \"Hacha\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400. Rechazado por el enum de Zod antes de tocar la base de datos."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo tipo_actividad', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('tipo_actividad');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E2 - estado fuera del catalogo",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Prueba error\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"A medio hacer\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo estado', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('estado');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E3 - fecha en formato dd/mm/aaaa",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Prueba fecha\",\n  \"tipo_actividad\": \"Testing\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"05/10/2026\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400. El formato de fecha debe ser ISO YYYY-MM-DD."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo fecha_creacion', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('fecha_creacion');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E4 - campo obligatorio vacio",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Resumen\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400. Un espacio en blanco tampoco cuenta como valor."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo nombre_proyecto', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('nombre_proyecto');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E5 - campo obligatorio ausente",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Sin sprint\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Resumen\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400. Falta la propiedad sprint."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo sprint', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('sprint');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E6 - resumen mas largo que 200 caracteres",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"Resumen largo\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Este resumen supera intencionalmente los doscientos caracteres permitidos por el modelo de datos para demostrar que el servidor rechaza el registro antes de intentar insertarlo en la base de datos, y que la longitud maxima se valida tanto en la capa de Zod como en la restriccion de columna.\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas",
             "description": "Esperado: 400. Coincide con el VARCHAR(200) de la columna resumen."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Se senala el campo resumen', function () {",
+                  "    var d = pm.response.json().detalles;",
+                  "    pm.expect(d).to.be.an('array').that.is.not.empty;",
+                  "    pm.expect(d.map(function (x) { return x.campo; })).to.include('resumen');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E7 - body con JSON malformado",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "text/plain" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/plain"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "esto no es un objeto JSON"
             },
             "url": "{{baseUrl}}/tareas",
-            "description": "Esperado: 400. IMPORTANTE: cambiar el tipo del body a text/plain, no JSON, o Postman no permitira enviarlo."
-          }
+            "description": "Postman no permite enviar texto invalido con Content-Type: application/json, asi que este caso usa text/plain. El servidor no intenta parsear el body, lo encuentra vacio y falla la validacion de Zod contra la raiz. Esperado: 400 con \"Datos invalidos\" y campo \"(raiz)\".\n\nNota: la misma API responde 400 con \"JSON invalido en el body\" cuando si recibe un Content-Type: application/json cuyo texto no es JSON valido; esa variante se cubre en el test automatizado backend/test/api.test.js."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Datos invalidos');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E8 - editar una tarea inexistente",
           "request": {
             "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre_proyecto\": \"No existe\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe dar 404\",\n  \"descripcion\": \"Debe dar 404\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
             },
             "url": "{{baseUrl}}/tareas/999999",
             "description": "Esperado: 404."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Tarea no encontrada');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E9 - obtener una tarea inexistente",
@@ -258,7 +547,21 @@
             "header": [],
             "url": "{{baseUrl}}/tareas/999999",
             "description": "Esperado: 404."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Tarea no encontrada');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E10 - eliminar una tarea inexistente",
@@ -267,16 +570,46 @@
             "header": [],
             "url": "{{baseUrl}}/tareas/999999",
             "description": "Esperado: 404."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Tarea no encontrada');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E11 - finalizar una tarea ya finalizada",
           "request": {
             "method": "PATCH",
             "header": [],
-            "url": "{{baseUrl}}/tareas/1/finalizar",
-            "description": "Ejecutar primero el caso 07 sobre la tarea 1. Esperado: 404, porque la API no vuelve a finalizar ni pisa la fecha de cierre original."
-          }
+            "url": "{{baseUrl}}/tareas/{{tareaId}}/finalizar",
+            "description": "Ejecutar primero el caso 03 (crea la tarea y guarda {{tareaId}}) y luego el 07 (la finaliza). Este caso intenta finalizar esa misma tarea por segunda vez. Esperado: 404, porque la API no vuelve a finalizar ni pisa la fecha de cierre original."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404 Not Found', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Rechaza la re-finalizacion', function () {",
+                  "    var r = pm.response.json();",
+                  "    pm.expect(r.error).to.be.a('string');",
+                  "    console.log('motivo del 404:', r.error);",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E12 - id no numerico",
@@ -285,7 +618,21 @@
             "header": [],
             "url": "{{baseUrl}}/tareas/abc",
             "description": "Esperado: 400. Codigo de error 22P02 de PostgreSQL, traducido a un mensaje util en lugar de un 500 generico."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Identificador con formato invalido');",
+                  "});"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "E13 - ruta inexistente",
@@ -294,7 +641,21 @@
             "header": [],
             "url": "{{baseUrl}}/no-existe",
             "description": "Esperado: 404."
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () { pm.response.to.have.status(404); });",
+                  "pm.test('Mensaje de error correcto', function () {",
+                  "    pm.expect(pm.response.json().error).to.eql('Ruta no encontrada');",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     }
