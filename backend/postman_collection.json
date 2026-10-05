@@ -1,0 +1,302 @@
+{
+  "info": {
+    "name": "TP5 - API Tareas",
+    "description": "Casos correctos e incorrectos de la API de tareas.\n\nImportar en Postman: File > Import > Link > [o seleccionar el archivo]\n\nLa variable baseUrl apunta al frontend servido por nginx (puerto 8080), que a su vez\nhace de proxy inverso hacia el backend. Para golpear la API directo, cambiar a\nhttp://localhost:3000/api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api",
+      "type": "string"
+    },
+    {
+      "key": "tareaId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "CASOS CORRECTOS",
+      "item": [
+        {
+          "name": "01 - Healthcheck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health",
+            "description": "Verifica que la API responde y que la base de datos esta accesible."
+          }
+        },
+        {
+          "name": "02 - Listar tareas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas",
+            "description": "Devuelve todas las tareas ordenadas por fecha de creacion descendente."
+          }
+        },
+        {
+          "name": "03 - Crear tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201 Created', () => pm.response.to.have.status(201));",
+                  "const id = pm.response.json().id;",
+                  "pm.collectionVariables.set('tareaId', id);",
+                  "console.log('id creado:', id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Refactor login\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Reescribir el formulario de acceso\",\n  \"descripcion\": \"Separar la validacion de UI de la de negocio en el login.\",\n  \"prioridad\": \"Alta\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Acceso al repositorio frontend\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Crea una tarea nueva. Guarda automaticamente el id creado en la variable tareaId para los casos siguientes."
+          }
+        },
+        {
+          "name": "04 - Crear tarea ya finalizada",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Suite de tests\",\n  \"tipo_actividad\": \"Testing\",\n  \"estado\": \"Finalizada\",\n  \"resumen\": \"Cubrir endpoints de tareas\",\n  \"descripcion\": \"Casos de prueba CRUD sobre la API, incluyendo validaciones.\",\n  \"prioridad\": \"Baja\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Bruno Diaz\",\n  \"precondicion\": \"API desplegada en staging\",\n  \"fecha_creacion\": \"2026-09-15\",\n  \"fecha_cierre\": \"2026-09-30\",\n  \"sprint\": \"Sprint 6\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "El cliente puede informar fecha_cierre si ya conoce el cierre."
+          }
+        },
+        {
+          "name": "05 - Obtener una tarea por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/{{tareaId}}"
+          }
+        },
+        {
+          "name": "06 - Editar tarea",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Migracion ERP v2\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"En Progreso\",\n  \"resumen\": \"Migrar facturacion a PostgreSQL\",\n  \"descripcion\": \"Reescribir las consultas sobre el esquema nuevo.\",\n  \"prioridad\": \"Crítica\",\n  \"informador\": \"Carla Mendez\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Backup verificado\",\n  \"fecha_creacion\": \"2026-10-01\",\n  \"sprint\": \"Sprint 7\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas/{{tareaId}}",
+            "description": "Reemplaza todos los campos de la tarea."
+          }
+        },
+        {
+          "name": "07 - Finalizar tarea",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/{{tareaId}}/finalizar",
+            "description": "No recibe body. El servidor pone estado=Finalizada y fecha_cierre=CURRENT_DATE juntos, de modo que el cliente no puede desincronizar ambos valores. Si la tarea ya estaba finalizada devuelve 404 y no pisa la fecha de cierre original."
+          }
+        },
+        {
+          "name": "08 - Resumen con estadisticas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/resumen"
+          }
+        },
+        {
+          "name": "09 - Filtrar por estado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas?estado=Finalizada"
+          }
+        },
+        {
+          "name": "10 - Buscar por proyecto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas?proyecto=Migr",
+            "description": "Busqueda parcial, case-insensitive (ILIKE)."
+          }
+        },
+        {
+          "name": "11 - Eliminar tarea",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/{{tareaId}}",
+            "description": "Devuelve 204 sin contenido. Ejecutar al final para no romper los casos que dependen de la variable tareaId."
+          }
+        }
+      ]
+    },
+    {
+      "name": "CASOS INCORRECTOS",
+      "item": [
+        {
+          "name": "E1 - tipo_actividad fuera del catalogo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Prueba error\",\n  \"tipo_actividad\": \"Hacha\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. Rechazado por el enum de Zod antes de tocar la base de datos."
+          }
+        },
+        {
+          "name": "E2 - estado fuera del catalogo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Prueba error\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"A medio hacer\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400."
+          }
+        },
+        {
+          "name": "E3 - fecha en formato dd/mm/aaaa",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Prueba fecha\",\n  \"tipo_actividad\": \"Testing\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe fallar\",\n  \"descripcion\": \"Debe fallar\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"05/10/2026\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. El formato de fecha debe ser ISO YYYY-MM-DD."
+          }
+        },
+        {
+          "name": "E4 - campo obligatorio vacio",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Resumen\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. Un espacio en blanco tampoco cuenta como valor."
+          }
+        },
+        {
+          "name": "E5 - campo obligatorio ausente",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Sin sprint\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Resumen\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. Falta la propiedad sprint."
+          }
+        },
+        {
+          "name": "E6 - resumen mas largo que 200 caracteres",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"Resumen largo\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Este resumen supera intencionalmente los doscientos caracteres permitidos por el modelo de datos para demostrar que el servidor rechaza el registro antes de intentar insertarlo en la base de datos, y que la longitud maxima se valida tanto en la capa de Zod como en la restriccion de columna.\",\n  \"descripcion\": \"Descripcion\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. Coincide con el VARCHAR(200) de la columna resumen."
+          }
+        },
+        {
+          "name": "E7 - body con JSON malformado",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "text/plain" }],
+            "body": {
+              "mode": "raw",
+              "raw": "esto no es un objeto JSON"
+            },
+            "url": "{{baseUrl}}/tareas",
+            "description": "Esperado: 400. IMPORTANTE: cambiar el tipo del body a text/plain, no JSON, o Postman no permitira enviarlo."
+          }
+        },
+        {
+          "name": "E8 - editar una tarea inexistente",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre_proyecto\": \"No existe\",\n  \"tipo_actividad\": \"Desarrollo\",\n  \"estado\": \"Pendiente\",\n  \"resumen\": \"Debe dar 404\",\n  \"descripcion\": \"Debe dar 404\",\n  \"prioridad\": \"Media\",\n  \"informador\": \"Carla\",\n  \"persona_asignada\": \"Vine\",\n  \"precondicion\": \"Ninguna\",\n  \"fecha_creacion\": \"2026-10-05\",\n  \"sprint\": \"Sprint 9\"\n}"
+            },
+            "url": "{{baseUrl}}/tareas/999999",
+            "description": "Esperado: 404."
+          }
+        },
+        {
+          "name": "E9 - obtener una tarea inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/999999",
+            "description": "Esperado: 404."
+          }
+        },
+        {
+          "name": "E10 - eliminar una tarea inexistente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/999999",
+            "description": "Esperado: 404."
+          }
+        },
+        {
+          "name": "E11 - finalizar una tarea ya finalizada",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/1/finalizar",
+            "description": "Ejecutar primero el caso 07 sobre la tarea 1. Esperado: 404, porque la API no vuelve a finalizar ni pisa la fecha de cierre original."
+          }
+        },
+        {
+          "name": "E12 - id no numerico",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/tareas/abc",
+            "description": "Esperado: 400. Codigo de error 22P02 de PostgreSQL, traducido a un mensaje util en lugar de un 500 generico."
+          }
+        },
+        {
+          "name": "E13 - ruta inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/no-existe",
+            "description": "Esperado: 404."
+          }
+        }
+      ]
+    }
+  ]
+}
