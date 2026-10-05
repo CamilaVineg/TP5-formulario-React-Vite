@@ -1,0 +1,129 @@
+# Documento de pruebas HTTP para la API de tareas
+# Uso con la extension REST Client de VS Code.
+# Iniciar la API con: docker compose up -d
+
+@base = http://localhost:8080/api
+@tareaId = 1
+
+### Healthcheck
+GET {{base}}/health
+
+### Listar todas
+GET {{base}}/tareas
+
+### Listar solo finalizadas
+GET {{base}}/tareas?estado=Finalizada
+
+### Buscar por nombre de proyecto
+GET {{base}}/tareas?proyecto=Migr
+
+### Resumen con estadisticas
+GET {{base}}/tareas/resumen
+
+### Obtener una por id
+GET {{base}}/tareas/{{tareaId}}
+
+### Crear (caso correcto)
+POST {{base}}/tareas
+Content-Type: application/json
+
+{
+  "nombre_proyecto": "Refactor login",
+  "tipo_actividad": "Desarrollo",
+  "estado": "Pendiente",
+  "resumen": "Reescribir el formulario de acceso",
+  "descripcion": "Separar la validacion de UI de la de negocio en el login.",
+  "prioridad": "Alta",
+  "informador": "Carla Mendez",
+  "persona_asignada": "Vine",
+  "precondicion": "Acceso al repositorio frontend",
+  "fecha_creacion": "2026-10-05",
+  "sprint": "Sprint 9"
+}
+
+### Crear con tipo_actividad invalido (debe devolver 400)
+POST {{base}}/tareas
+Content-Type: application/json
+
+{
+  "nombre_proyecto": "Prueba error",
+  "tipo_actividad": "Hacha",
+  "estado": "Pendiente",
+  "resumen": "Debe fallar",
+  "descripcion": "Debe fallar",
+  "prioridad": "Media",
+  "informador": "Carla",
+  "persona_asignada": "Vine",
+  "precondicion": "Ninguna",
+  "fecha_creacion": "2026-10-05",
+  "sprint": "Sprint 9"
+}
+
+### Crear con fecha en formato dd/mm/aaaa (debe devolver 400)
+POST {{base}}/tareas
+Content-Type: application/json
+
+{
+  "nombre_proyecto": "Prueba fecha",
+  "tipo_actividad": "Testing",
+  "estado": "Pendiente",
+  "resumen": "Debe fallar",
+  "descripcion": "Debe fallar",
+  "prioridad": "Media",
+  "informador": "Carla",
+  "persona_asignada": "Vine",
+  "precondicion": "Ninguna",
+  "fecha_creacion": "05/10/2026",
+  "sprint": "Sprint 9"
+}
+
+### Editar (caso correcto)
+PUT {{base}}/tareas/{{tareaId}}
+Content-Type: application/json
+
+{
+  "nombre_proyecto": "Migracion ERP v2",
+  "tipo_actividad": "Desarrollo",
+  "estado": "En Progreso",
+  "resumen": "Migrar facturacion a PostgreSQL",
+  "descripcion": "Reescribir las consultas sobre el esquema nuevo.",
+  "prioridad": "Crítica",
+  "informador": "Carla Mendez",
+  "persona_asignada": "Vine",
+  "precondicion": "Backup verificado",
+  "fecha_creacion": "2026-10-01",
+  "sprint": "Sprint 7"
+}
+
+### Finalizar
+PATCH {{base}}/tareas/{{tareaId}}/finalizar
+
+### Editar una tarea inexistente (debe devolver 404)
+PUT {{base}}/tareas/999999
+Content-Type: application/json
+
+{
+  "nombre_proyecto": "No existe",
+  "tipo_actividad": "Desarrollo",
+  "estado": "Pendiente",
+  "resumen": "Debe dar 404",
+  "descripcion": "Debe dar 404",
+  "prioridad": "Media",
+  "informador": "Carla",
+  "persona_asignada": "Vine",
+  "precondicion": "Ninguna",
+  "fecha_creacion": "2026-10-05",
+  "sprint": "Sprint 9"
+}
+
+### Id no numerico (debe devolver 400)
+GET {{base}}/tareas/abc
+
+### Eliminar
+DELETE {{base}}/tareas/{{tareaId}}
+
+### Eliminar una inexistente (debe devolver 404)
+DELETE {{base}}/tareas/999999
+
+### Ruta inexistente (debe devolver 404)
+GET {{base}}/no-existe

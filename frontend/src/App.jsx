@@ -1,121 +1,121 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import TareaForm from './components/TareaForm.jsx'
+import ListadoTareas from './components/ListadoTareas.jsx'
+import { useTareas } from './hooks/useTareas.js'
+import { ESTADOS } from './constants/tarea.js'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    tareas,
+    cargando,
+    error,
+    filtroEstado,
+    setFiltroEstado,
+    busqueda,
+    setBusqueda,
+    guardar,
+    eliminar,
+    finalizar,
+  } = useTareas()
+
+  const [editando, setEditando] = useState(null)
+  const [aviso, setAviso] = useState(null)
+
+  const notificar = (mensaje, tipo = 'ok') => {
+    setAviso({ mensaje, tipo })
+    setTimeout(() => setAviso(null), 4000)
+  }
+
+  const alGuardar = async (tarea) => {
+    try {
+      const guardada = await guardar(tarea)
+      setEditando(null)
+      notificar(guardada.id ? `Tarea #${guardada.id} actualizada` : `Tarea #${guardada.id} creada`)
+    } catch (err) {
+      notificar(err.message, 'error')
+    }
+  }
+
+  const alFinalizar = async (tarea) => {
+    if (!window.confirm(`¿Finalizar la tarea "${tarea.nombre_proyecto}"? Se le asignará la fecha de cierre de hoy.`)) {
+      return
+    }
+    try {
+      await finalizar(tarea.id)
+      notificar(`Tarea #${tarea.id} finalizada`)
+    } catch (err) {
+      notificar(err.message, 'error')
+    }
+  }
+
+  const alEliminar = async (tarea) => {
+    if (!window.confirm(`¿Eliminar la tarea "${tarea.nombre_proyecto}"? Esta acción no se puede deshacer.`)) {
+      return
+    }
+    try {
+      await eliminar(tarea.id)
+      notificar(`Tarea #${tarea.id} eliminada`)
+    } catch (err) {
+      notificar(err.message, 'error')
+    }
+  }
+
+  const finalizadas = tareas.filter((t) => t.estado === 'Finalizada').length
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app">
+      <header className="encabezado">
+        <h1>Manejador de Tareas</h1>
+        <p>Gestión de tareas de proyectos de software</p>
+      </header>
+
+      {aviso && <div className={`aviso aviso--${aviso.tipo}`}>{aviso.mensaje}</div>}
+
+      <TareaForm
+        key={editando ? `editar-${editando.id}` : 'nueva'}
+        valoresIniciales={editando}
+        onSubmit={alGuardar}
+        onCancelar={() => setEditando(null)}
+      />
+
+      <section className="panel">
+        <div className="listado-cabecera">
+          <h2 className="panel__titulo">Listado de Tareas</h2>
+          <div className="filtros">
+            <input
+              type="search"
+              placeholder="Buscar por proyecto..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              aria-label="Buscar por proyecto"
+            />
+            <select
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+              aria-label="Filtrar por estado"
+            >
+              <option value="">Todos los estados</option>
+              {ESTADOS.map((v) => (
+                <option key={v} value={v}>{v}</option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+
+        <p className="contador">
+          {tareas.length} tareas visibles · {finalizadas} finalizadas
+        </p>
+
+        <ListadoTareas
+          tareas={tareas}
+          cargando={cargando}
+          error={error}
+          onEditar={setEditando}
+          onFinalizar={alFinalizar}
+          onEliminar={alEliminar}
+        />
       </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </div>
   )
 }
 
